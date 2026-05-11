@@ -112,6 +112,20 @@ async def process_pdf(
     return True
 
 
+async def get_processed_chapters() -> set:
+    """Return set of chapter IDs already in database."""
+    try:
+        embedder = ChunkEmbedder(POSTGRES_URL)
+        await embedder.connect()
+        result = await embedder.conn.fetch("SELECT DISTINCT chapter_id FROM ncert_chunks")
+        processed = {row['chapter_id'] for row in result}
+        await embedder.close()
+        return processed
+    except Exception as e:
+        print(f"Warning: Could not fetch processed chapters: {e}")
+        return set()
+
+
 async def main():
     parser = argparse.ArgumentParser(description="Ingest NCERT PDFs into Sara's knowledge graph")
     parser.add_argument("--pdf-dir", required=True, help="Path to Class-11/ folder")
@@ -136,8 +150,12 @@ async def main():
             print(f"ERROR: File not found: {args.file}")
             sys.exit(1)
 
+    # Get already-processed chapters to skip them
+    processed = await get_processed_chapters()
+
     # Build processing queue
     queue = []
+    skipped = []
     for pdf_path in sorted(all_pdfs):
         stem = pdf_path.stem   # e.g. "keph101"
         meta = get_chapter_meta(stem)
@@ -147,11 +165,20 @@ async def main():
             continue  # skip problem set files for now
         if args.subject and meta.get("subject") != args.subject:
             continue
+
+        # Skip if already processed
+        chapter_id = meta.get("id")
+        if chapter_id in processed:
+            skipped.append(chapter_id)
+            continue
+
         queue.append((pdf_path, meta))
 
     print(f"\nSara JEE Companion — NCERT Ingestion Pipeline")
     print(f"PDF directory : {pdf_dir}")
     print(f"Files to process: {len(queue)}")
+    if skipped:
+        print(f"Chapters already done: {len(skipped)} (skipping)")
     if args.dry_run:
         print("MODE: DRY RUN (no DB writes)")
     print()
