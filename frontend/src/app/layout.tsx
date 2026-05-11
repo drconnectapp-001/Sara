@@ -1,0 +1,17 @@
+import type { Metadata } from 'next'
+import './globals.css'
+
+export const metadata: Metadata = {
+  title: 'Sara — JEE Companion',
+  description: 'Your personal JEE preparation companion',
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body className="bg-sara-bg text-sara-text antialiased">
+        {children}
+      </body>
+    </html>
+  )
+}
