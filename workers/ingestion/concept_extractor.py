@@ -92,12 +92,12 @@ async def extract_section(
         chapter_name=chapter_name,
         subject=subject,
         section_heading=section_heading,
-        section_text=section_text[:4000]  # hard cap — Haiku context limit safe zone
+        section_text=section_text[:3500]  # reduced to ensure output tokens available
     )
 
     response = await client.messages.create(
         model="claude-haiku-4-5-20251001",
-        max_tokens=1500,
+        max_tokens=2000,
         messages=[{"role": "user", "content": prompt}]
     )
 
@@ -110,11 +110,31 @@ async def extract_section(
 
     try:
         return json.loads(raw)
-    except json.JSONDecodeError:
-        # Attempt to extract JSON object from response
+    except json.JSONDecodeError as e:
+        # Try to extract and repair malformed JSON
         match = re.search(r'\{.*\}', raw, re.DOTALL)
         if match:
-            return json.loads(match.group(0))
+            extracted = match.group(0)
+            # Remove incomplete trailing strings (handle unterminated quotes)
+            # Find the last valid closing brace and keep only that
+            brace_count = 0
+            last_valid_pos = -1
+            for i, char in enumerate(extracted):
+                if char == '{':
+                    brace_count += 1
+                elif char == '}':
+                    brace_count -= 1
+                    if brace_count == 0:
+                        last_valid_pos = i
+
+            if last_valid_pos > 0:
+                extracted = extracted[:last_valid_pos + 1]
+                try:
+                    return json.loads(extracted)
+                except json.JSONDecodeError:
+                    pass
+
+        # Fallback: return empty structure
         return {"concepts": [], "formulas": [], "cross_subject_links": [], "common_mistakes": []}
 
 
