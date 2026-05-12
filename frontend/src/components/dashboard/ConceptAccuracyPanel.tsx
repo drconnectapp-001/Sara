@@ -3,6 +3,7 @@
 import { Crosshair } from 'lucide-react'
 import type { ConceptAccuracyRow } from './types'
 import { cn } from './cn'
+import { glassCard } from './dashboardTheme'
 
 interface ConceptAccuracyPanelProps {
   rows: ConceptAccuracyRow[]
@@ -14,52 +15,60 @@ export function ConceptAccuracyPanel({ rows, className, maxRows = 12 }: ConceptA
   const display = rows.slice(0, maxRows)
 
   return (
-    <div
-      className={cn(
-        'flex flex-col rounded-2xl border border-white/[0.08] bg-[#161626]/90 p-5 shadow-lg ring-1 ring-white/[0.04]',
-        className
-      )}
-    >
+    <div className={cn('flex flex-col p-5', glassCard, className)}>
       <div className="mb-4 flex items-center gap-2">
-        <Crosshair className="h-4 w-4 text-violet-400/90" strokeWidth={2} />
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-100/90 text-[#6366F1] shadow-sm ring-1 ring-indigo-200/80">
+          <Crosshair className="h-4 w-4" strokeWidth={2} />
+        </div>
         <div>
-          <h2 className="text-base font-semibold text-white">Concept accuracy</h2>
-          <p className="text-xs text-slate-500">Practice performance · lowest first</p>
+          <h2 className="text-base font-bold text-slate-900">Concept accuracy</h2>
+          <p className="text-xs font-medium text-slate-500">Practice performance · lowest first</p>
         </div>
       </div>
-      <div className="max-h-[340px] overflow-auto rounded-xl border border-white/[0.06]">
+      <div
+        className={cn(
+          'max-h-[340px] overflow-auto border border-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.85)]',
+          'rounded-xl bg-white/35 backdrop-blur-md'
+        )}
+      >
         <table className="w-full text-left text-sm">
-          <thead className="sticky top-0 z-[1] bg-[#12121c]/95 backdrop-blur-sm">
-            <tr className="border-b border-white/[0.08] text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+          <thead className="sticky top-0 z-[1] border-b border-white/40 bg-white/65 backdrop-blur-md">
+            <tr className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
               <th className="px-3 py-2.5">Concept</th>
               <th className="px-3 py-2.5">Subject</th>
               <th className="px-3 py-2.5 text-right">Acc.</th>
               <th className="px-3 py-2.5 text-right">N</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/[0.05]">
+          <tbody className="divide-y divide-sky-100/80">
             {display.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-3 py-10 text-center text-slate-500">
+                <td colSpan={4} className="px-3 py-10 text-center font-medium text-slate-500">
                   No practice attempts recorded yet.
                 </td>
               </tr>
             ) : (
               display.map((r) => (
-                <tr key={`${r.subject}-${r.concept}`} className="bg-[#0a0a12]/40 hover:bg-white/[0.03]">
-                  <td className="max-w-[160px] truncate px-3 py-2.5 font-medium text-slate-200" title={r.concept}>
+                <tr
+                  key={`${r.subject}-${r.concept}`}
+                  className="bg-white/20 transition-colors hover:bg-sky-50/70"
+                >
+                  <td
+                    className="max-w-[160px] truncate px-3 py-2.5 font-semibold text-slate-800"
+                    title={r.concept}
+                  >
                     {r.concept}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-2.5 text-slate-400">{r.subject}</td>
+                  <td className="whitespace-nowrap px-3 py-2.5 text-slate-600">{r.subject}</td>
                   <td className="px-3 py-2.5 text-right tabular-nums">
                     <span
                       className={cn(
-                        'font-semibold',
+                        'font-bold',
                         r.accuracy >= 75
-                          ? 'text-emerald-300/90'
+                          ? 'text-emerald-600'
                           : r.accuracy >= 50
-                            ? 'text-amber-200/90'
-                            : 'text-rose-300/90'
+                            ? 'text-amber-700'
+                            : 'text-rose-600'
                       )}
                     >
                       {r.accuracy}%
@@ -73,7 +82,9 @@ export function ConceptAccuracyPanel({ rows, className, maxRows = 12 }: ConceptA
         </table>
       </div>
       {rows.length > maxRows ? (
-        <p className="mt-2 text-center text-[11px] text-slate-600">Showing {maxRows} of {rows.length} concepts</p>
+        <p className="mt-2 text-center text-[11px] font-medium text-slate-400">
+          Showing {maxRows} of {rows.length} concepts
+        </p>
       ) : null}
     </div>
   )

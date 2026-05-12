@@ -29,13 +29,21 @@ const defaultSara: SaraDashboardProfile = {
 
 const defaultPlanner: PlannerSummary = { week_total_minutes: 0, by_subject: [] }
 
+const emptyDashboard: DashboardData = {
+  sara: defaultSara,
+  trend: [],
+  mistakes: [],
+  planner: defaultPlanner,
+  accuracy: [],
+}
+
 function parseJson<T>(raw: unknown, fallback: T): T {
   if (raw === null || raw === undefined) return fallback
   return raw as T
 }
 
 export function useDashboardData() {
-  const [data, setData] = useState<DashboardData | null>(null)
+  const [data, setData] = useState<DashboardData>(emptyDashboard)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -79,13 +87,7 @@ export function useDashboardData() {
       setData({ sara, trend, mistakes, planner, accuracy })
     } catch {
       setError('Could not load dashboard. Check your connection and API.')
-      setData({
-        sara: defaultSara,
-        trend: [],
-        mistakes: [],
-        planner: defaultPlanner,
-        accuracy: [],
-      })
+      setData(emptyDashboard)
     } finally {
       setLoading(false)
     }

@@ -3,6 +3,7 @@
 import { Flame, Target } from 'lucide-react'
 import type { SaraDashboardProfile } from './types'
 import { cn } from './cn'
+import { accentGradient, glassCard, glassCardInner } from './dashboardTheme'
 
 interface DashboardHeroProps {
   profile: SaraDashboardProfile
@@ -23,33 +24,40 @@ export function DashboardHero({ profile, weekStudyMinutes, loading }: DashboardH
   const mood = profile.current_mood?.trim()
 
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#161626]/90 p-6 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.7)] ring-1 ring-white/[0.04] sm:p-8">
+    <section className={cn('relative overflow-hidden p-6 sm:p-8', glassCard)}>
       <div
-        className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-indigo-500/15 blur-3xl"
+        className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full bg-gradient-to-br from-sky-200/50 to-indigo-200/40 blur-3xl"
         aria-hidden
       />
       <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-start">
         <div>
-          <p className="text-sm font-medium text-indigo-300/90">Study hub</p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+          <p
+            className={cn(
+              'inline-block rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white shadow-sm',
+              accentGradient
+            )}
+          >
+            Study hub
+          </p>
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
             Hey {profile.name}
           </h1>
-          <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-slate-400">
+          <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-slate-600">
             {loading ? (
-              <span className="inline-block h-4 w-full max-w-md animate-pulse rounded bg-white/10" />
+              <span className="inline-block h-4 w-full max-w-md animate-pulse rounded-lg bg-sky-100/80" />
             ) : mood ? (
               <>
-                <span className="text-slate-500">Headspace: </span>
-                <span className="font-medium text-slate-200">{mood}</span>
+                <span className="text-slate-500">How you&apos;re doing: </span>
+                <span className="font-semibold text-slate-800">{mood}</span>
                 <span className="text-slate-500">
                   {' '}
-                  — small steps today still move the needle for JEE.
+                  — keep showing up; consistency beats cramming for JEE.
                 </span>
               </>
             ) : (
               <>
-                Your overview of mocks, weak spots, and where time went this week — so you can prep
-                with intention.
+                Your mocks, weak spots, and where time went this week — one calm place to steer
+                your prep.
               </>
             )}
           </p>
@@ -58,7 +66,7 @@ export function DashboardHero({ profile, weekStudyMinutes, loading }: DashboardH
               {profile.weak_subjects?.slice(0, 4).map((s) => (
                 <span
                   key={`w-${s}`}
-                  className="rounded-lg border border-amber-500/25 bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-200/90"
+                  className="rounded-lg border border-amber-200/80 bg-amber-50/90 px-2.5 py-1 text-xs font-semibold text-amber-900/90 shadow-sm"
                 >
                   Focus · {s}
                 </span>
@@ -66,7 +74,7 @@ export function DashboardHero({ profile, weekStudyMinutes, loading }: DashboardH
               {profile.strong_subjects?.slice(0, 3).map((s) => (
                 <span
                   key={`s-${s}`}
-                  className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-200/85"
+                  className="rounded-lg border border-emerald-200/80 bg-emerald-50/90 px-2.5 py-1 text-xs font-semibold text-emerald-900/85 shadow-sm"
                 >
                   Strong · {s}
                 </span>
@@ -92,9 +100,14 @@ export function DashboardHero({ profile, weekStudyMinutes, loading }: DashboardH
             hint="Mock goal"
             className="min-w-[140px]"
           />
-          <div className="col-span-2 rounded-xl border border-white/[0.08] bg-[#0a0a12]/80 px-4 py-3 sm:col-span-1 sm:min-w-[200px]">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Study time</p>
-            <p className="mt-1 text-lg font-semibold text-white">
+          <div
+            className={cn(
+              'col-span-2 border border-white/50 bg-gradient-to-br from-sky-50/90 to-indigo-50/80 px-4 py-3 sm:col-span-1 sm:min-w-[200px]',
+              glassCardInner
+            )}
+          >
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Study time</p>
+            <p className="mt-1 bg-gradient-to-r from-[#3B82F6] to-[#6366F1] bg-clip-text text-lg font-bold text-transparent">
               {loading ? '…' : formatWeekTime(weekStudyMinutes)}
             </p>
           </div>
@@ -118,18 +131,13 @@ function StatPill({
   className?: string
 }) {
   return (
-    <div
-      className={cn(
-        'rounded-xl border border-white/[0.08] bg-[#0a0a12]/80 px-4 py-3 ring-1 ring-white/[0.03]',
-        className
-      )}
-    >
+    <div className={cn('border border-white/50 px-4 py-3', glassCardInner, className)}>
       <div className="flex items-center gap-2 text-slate-500">
-        <Icon className="h-3.5 w-3.5 text-indigo-400" strokeWidth={2} />
-        <span className="text-[10px] font-semibold uppercase tracking-wider">{label}</span>
+        <Icon className="h-3.5 w-3.5 text-[#3B82F6]" strokeWidth={2} />
+        <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
       </div>
-      <p className="mt-1 text-lg font-semibold tracking-tight text-white">{value}</p>
-      {hint ? <p className="mt-0.5 text-[11px] text-slate-500">{hint}</p> : null}
+      <p className="mt-1 text-lg font-bold tracking-tight text-slate-900">{value}</p>
+      {hint ? <p className="mt-0.5 text-[11px] font-medium text-slate-500">{hint}</p> : null}
     </div>
   )
 }
