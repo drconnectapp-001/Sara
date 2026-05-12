@@ -1,0 +1,219 @@
+{
+  "main": {
+    "id": "66ec0d349707b33c",
+    "type": "split",
+    "children": [
+      {
+        "id": "1eb91dd8a2e5e61f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ac638ec88f02f7e3",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "e67ce59e8b364f7b",
+    "type": "split",
+    "children": [
+      {
+        "id": "259861c01158e538",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "661f6448ed8733a7",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "3f7610e942186fae",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "820a3490afbf0864",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "right": {
+    "id": "124a0d168500bbff",
+    "type": "split",
+    "children": [
+      {
+        "id": "ecdf370715955f0b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0a3f8822b0c35912",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "433e2e3578715c8c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "6acfe3d2c7455fa9",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "7629c0ca75f76210",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "917d2982caea1f6d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "ac638ec88f02f7e3",
+  "lastOpenFiles": [
+    "wiki/concepts/limits-and-derivatives.md",
+    "wiki/concepts/sequences-and-series.md",
+    "wiki/concepts/trigonometric-functions.md",
+    "wiki/concepts/kinetic-theory.md",
+    "wiki/concepts/mechanical-properties.md",
+    "wiki/concepts/waves.md",
+    "wiki/concepts/simple-harmonic-motion.md",
+    "wiki/concepts/kinematics.md",
+    "wiki/sources/kemh114.md",
+    "wiki/sources/kemh113.md",
+    "wiki/sources/kemh112.md",
+    "wiki/sources/kemh111.md",
+    "wiki/sources/kemh110.md",
+    "wiki/sources/kemh109.md",
+    "wiki/sources/kemh108.md",
+    "wiki/sources/kemh107.md",
+    "wiki/sources/kemh106.md",
+    "wiki/sources/kemh105.md",
+    "wiki/sources/kemh104.md",
+    "wiki/sources/kemh103.md",
+    "wiki/sources/kemh102.md",
+    "wiki/sources/kemh101.md",
+    "wiki/sources/keph207.md",
+    "wiki/sources/keph206.md",
+    "wiki/sources/keph205.md",
+    "wiki/sources/keph204.md",
+    "raw/Mathematics",
+    "raw/Physics/Part-02",
+    "raw/Physics/Part-01",
+    "raw/Physics",
+    "raw/Chemistry/Part-02",
+    "raw/Chemistry/untitled folder",
+    "pdf2md.py",
+    "raw/Chemistry/Part-01",
+    "raw/Chemistry",
+    "raw/untitled folder"
+  ]
+}
