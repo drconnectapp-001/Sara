@@ -52,10 +52,10 @@ export function useDashboardData() {
     setError(null)
 
     try {
-      const [saraRes, trendRes, mistakesRes, plannerRes, accuracyRes] = await Promise.all([
+      const [saraRes, trendRes, weakAreasRes, plannerRes, accuracyRes] = await Promise.all([
         fetch('/api/admin/sara', { cache: 'no-store' }),
         fetch('/api/mock/trend', { cache: 'no-store' }),
-        fetch('/api/mistakes/summary', { cache: 'no-store' }),
+        fetch('/api/planner/weak-areas', { cache: 'no-store' }),
         fetch('/api/planner/', { cache: 'no-store' }),
         fetch('/api/practice/accuracy', { cache: 'no-store' }),
       ])
@@ -76,7 +76,15 @@ export function useDashboardData() {
       }
 
       const trend = trendRes.ok ? parseJson(await trendRes.json(), [] as MockTrendPoint[]) : []
-      const mistakes = mistakesRes.ok ? parseJson(await mistakesRes.json(), [] as MistakeSummaryRow[]) : []
+
+      // weak-areas returns [{concept, subject, accuracy (0–100), attempts}]
+      // map to MistakeSummaryRow: errors = wrong attempts = round(attempts * (1 - accuracy/100))
+      type WeakArea = { concept: string; subject: string; accuracy: number; attempts: number }
+      const weakRaw = weakAreasRes.ok ? (await weakAreasRes.json() as WeakArea[]) : []
+      const mistakes: MistakeSummaryRow[] = weakRaw.map((r) => ({
+        concept: r.concept,
+        errors: Math.max(1, Math.round(r.attempts * (1 - r.accuracy / 100))),
+      }))
       const planner = plannerRes.ok
         ? parseJson(await plannerRes.json(), defaultPlanner as PlannerSummary)
         : defaultPlanner
