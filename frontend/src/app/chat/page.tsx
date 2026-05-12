@@ -4,6 +4,8 @@
  * Sara — main companion chat. Streams SSE tokens from POST /api/chat/.
  */
 import { useCallback, useState } from 'react'
+import Link from 'next/link'
+import { LayoutDashboard } from 'lucide-react'
 import { ChatHeader } from '@/components/chat/ChatHeader'
 import { ChatComposer } from '@/components/chat/ChatComposer'
 import { ChatMessageList } from '@/components/chat/ChatMessageList'
@@ -85,6 +87,15 @@ export default function ChatPage() {
       />
 
       <div className="relative z-10 flex min-h-screen flex-col">
+        <div className="shrink-0 flex items-center px-4 pt-3 pb-1 sm:px-6">
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-700 text-slate-400 hover:text-slate-200 hover:bg-white/[0.06] transition-colors"
+          >
+            <LayoutDashboard className="h-3.5 w-3.5" strokeWidth={2} />
+            Study
+          </Link>
+        </div>
         <ChatHeader />
         <ChatMessageList messages={messages} streaming={streaming} />
         <ChatComposer value={input} onChange={setInput} onSend={sendMessage} disabled={streaming || !sessionId} />

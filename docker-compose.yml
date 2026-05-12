@@ -18,8 +18,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:3000/api
     depends_on:
       - api
     restart: unless-stopped
@@ -34,6 +32,9 @@ services:
       - NEO4J_URI=bolt://neo4j:7687
       - POSTGRES_URL=postgresql://sara:${POSTGRES_PASSWORD}@postgres:5432/sara
       - REDIS_URL=redis://redis:6379
+      - OLLAMA_URL=http://host.docker.internal:11434
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       postgres:
         condition: service_healthy

@@ -8,6 +8,7 @@ Flow:
 Uses local Ollama (llama3.2) for chat — no Anthropic API credits needed.
 """
 import json
+import os
 import httpx
 import asyncio
 from app.core.config import settings
@@ -17,8 +18,8 @@ from app.rag.context_builder import build_context
 from app.memory.engine import retrieve_sara_memory, update_sara_memory
 from app.companion.prompts import build_system_prompt
 
-OLLAMA_URL   = "http://localhost:11434"
-OLLAMA_MODEL = "llama3.2:3b-instruct-q4_K_M"
+OLLAMA_URL   = os.getenv("OLLAMA_URL", "http://host.docker.internal:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2:3b-instruct-q4_K_M")
 
 # Simple keyword → concept mapping for fast concept extraction (no LLM needed)
 CONCEPT_KEYWORDS = {
