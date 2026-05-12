@@ -192,11 +192,11 @@ async def extract_chapter(
     examples: list[str],
     chapter_name: str,
     subject: str,
-    concurrency: int = 5
+    concurrency: int = 2
 ) -> tuple[list[dict], list[dict]]:
     """
     Process all sections and examples for a chapter concurrently.
-    concurrency=5 to avoid rate limits on Haiku.
+    concurrency=2 to respect Anthropic rate limits (reduced from 5).
     Returns (section_results, problem_results).
     """
     sem = asyncio.Semaphore(concurrency)
