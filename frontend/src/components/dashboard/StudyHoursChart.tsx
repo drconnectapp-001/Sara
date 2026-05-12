@@ -12,7 +12,7 @@ import {
 } from 'recharts'
 import type { PlannerSummary } from './types'
 import { cn } from './cn'
-import { glassCard, glassCardInner } from './dashboardTheme'
+import { glassCard } from './dashboardTheme'
 
 interface StudyHoursChartProps {
   planner: PlannerSummary
@@ -61,30 +61,17 @@ export function StudyHoursChart({ planner, className }: StudyHoursChartProps) {
         : `${planner.week_total_minutes}m total`
 
   return (
-    <div className={cn('flex h-[320px] flex-col p-5', glassCard, className)}>
-      <div className="mb-2 flex flex-wrap items-end justify-between gap-2">
+    <div className={cn('sara-dashboard-chart-shell', glassCard, className)}>
+      <div className="sara-chart-header-row">
         <div>
-          <h2 className="text-base font-bold text-slate-900">Study time by subject</h2>
-          <p className="mt-0.5 text-xs font-medium text-slate-500">Last 7 days · logged sessions</p>
+          <h2 className="sara-chart-card-title">Study time by subject</h2>
+          <p className="sara-chart-card-sub">Last 7 days · logged sessions</p>
         </div>
-        <span
-          className={cn(
-            'px-2.5 py-1 text-xs font-bold text-[#3B82F6] backdrop-blur-md',
-            glassCardInner
-          )}
-        >
-          {totalLabel}
-        </span>
+        <span className="sara-week-total-badge">{totalLabel}</span>
       </div>
-      <div className="min-h-0 flex-1 w-full pt-2">
+      <div style={{ flex: 1, minHeight: 0, width: '100%', paddingTop: 8 }}>
         {chartData.length === 0 ? (
-          <div
-            className="flex h-full items-center justify-center rounded-xl border border-dashed px-6 text-center text-sm font-semibold text-slate-600"
-            style={{
-              borderColor: 'rgba(125, 211, 252, 0.65)',
-              background: 'rgba(240, 249, 255, 0.65)',
-            }}
-          >
+          <div className="sara-chart-empty">
             No sessions this week. Log study time in the planner to fill this chart.
           </div>
         ) : (

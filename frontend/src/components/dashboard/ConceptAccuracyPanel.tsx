@@ -11,65 +11,56 @@ interface ConceptAccuracyPanelProps {
   maxRows?: number
 }
 
+function pctClass(accuracy: number): string {
+  if (accuracy >= 75) return 'sara-acc-pct sara-acc-pct--high'
+  if (accuracy >= 50) return 'sara-acc-pct sara-acc-pct--mid'
+  return 'sara-acc-pct sara-acc-pct--low'
+}
+
 export function ConceptAccuracyPanel({ rows, className, maxRows = 12 }: ConceptAccuracyPanelProps) {
   const display = rows.slice(0, maxRows)
 
   return (
-    <div className={cn('flex flex-col p-5', glassCard, className)}>
-      <div className="mb-4 flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-100/90 text-[#6366F1] shadow-sm ring-1 ring-indigo-200/80">
+    <div className={cn('sara-dashboard-section-card', glassCard, className)}>
+      <div className="sara-dashboard-card-head">
+        <div className="sara-dashboard-icon-badge sara-dashboard-icon-badge--indigo" aria-hidden>
           <Crosshair className="h-4 w-4" strokeWidth={2} />
         </div>
         <div>
-          <h2 className="text-base font-bold text-slate-900">Concept accuracy</h2>
-          <p className="text-xs font-medium text-slate-500">Practice performance · lowest first</p>
+          <h2 className="sara-chart-card-title">Concept accuracy</h2>
+          <p className="sara-chart-card-sub">Practice performance · lowest first</p>
         </div>
       </div>
-      <div className={cn('max-h-[340px] overflow-auto', glassCardInner)}>
-        <table className="w-full text-left text-sm">
-          <thead className="sticky top-0 z-[1] border-b border-white/40 bg-white/65 backdrop-blur-md">
-            <tr className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-              <th className="px-3 py-2.5">Concept</th>
-              <th className="px-3 py-2.5">Subject</th>
-              <th className="px-3 py-2.5 text-right">Acc.</th>
-              <th className="px-3 py-2.5 text-right">N</th>
+      <div className={cn('sara-acc-table-wrap', glassCardInner)}>
+        <table className="sara-acc-table">
+          <thead>
+            <tr>
+              <th>Concept</th>
+              <th>Subject</th>
+              <th style={{ textAlign: 'right' }}>Acc.</th>
+              <th style={{ textAlign: 'right' }}>N</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-sky-100/80">
+          <tbody>
             {display.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-3 py-10 text-center font-medium text-slate-500">
+                <td colSpan={4} style={{ textAlign: 'center', padding: '2.5rem 1rem', color: '#64748b' }}>
                   No practice attempts recorded yet.
                 </td>
               </tr>
             ) : (
               display.map((r) => (
-                <tr
-                  key={`${r.subject}-${r.concept}`}
-                  className="bg-white/20 transition-colors hover:bg-sky-50/70"
-                >
-                  <td
-                    className="max-w-[160px] truncate px-3 py-2.5 font-semibold text-slate-800"
-                    title={r.concept}
-                  >
+                <tr key={`${r.subject}-${r.concept}`}>
+                  <td className="sara-acc-concept" title={r.concept}>
                     {r.concept}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-2.5 text-slate-600">{r.subject}</td>
-                  <td className="px-3 py-2.5 text-right tabular-nums">
-                    <span
-                      className={cn(
-                        'font-bold',
-                        r.accuracy >= 75
-                          ? 'text-emerald-600'
-                          : r.accuracy >= 50
-                            ? 'text-amber-700'
-                            : 'text-rose-600'
-                      )}
-                    >
-                      {r.accuracy}%
-                    </span>
+                  <td style={{ color: '#475569', whiteSpace: 'nowrap' }}>{r.subject}</td>
+                  <td style={{ textAlign: 'right' }}>
+                    <span className={pctClass(r.accuracy)}>{r.accuracy}%</span>
                   </td>
-                  <td className="px-3 py-2.5 text-right tabular-nums text-slate-500">{r.total}</td>
+                  <td className="sara-acc-n" style={{ textAlign: 'right' }}>
+                    {r.total}
+                  </td>
                 </tr>
               ))
             )}
@@ -77,7 +68,7 @@ export function ConceptAccuracyPanel({ rows, className, maxRows = 12 }: ConceptA
         </table>
       </div>
       {rows.length > maxRows ? (
-        <p className="mt-2 text-center text-[11px] font-medium text-slate-400">
+        <p style={{ marginTop: '0.5rem', textAlign: 'center', fontSize: 11, fontWeight: 600, color: '#94a3b8' }}>
           Showing {maxRows} of {rows.length} concepts
         </p>
       ) : null}

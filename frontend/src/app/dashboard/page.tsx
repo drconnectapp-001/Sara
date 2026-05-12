@@ -1,7 +1,8 @@
 'use client'
 
 /**
- * Study dashboard — light glass UI; `.sara-dashboard` + globals ensure theme regardless of body.
+ * Study dashboard — light glass UI. Layout + glass use global `.sara-*` CSS
+ * so the page still looks correct when Tailwind isn’t processed (missing PostCSS).
  */
 import { DashboardShell } from '@/components/dashboard/DashboardShell'
 import { DashboardNav } from '@/components/dashboard/DashboardNav'
@@ -11,8 +12,6 @@ import { WeakConceptsCard } from '@/components/dashboard/WeakConceptsCard'
 import { StudyHoursChart } from '@/components/dashboard/StudyHoursChart'
 import { ConceptAccuracyPanel } from '@/components/dashboard/ConceptAccuracyPanel'
 import { useDashboardData } from '@/components/dashboard/useDashboardData'
-import { glassCardInner } from '@/components/dashboard/dashboardTheme'
-import { cn } from '@/components/chat/cn'
 import { RefreshCw } from 'lucide-react'
 
 export default function DashboardPage() {
@@ -21,22 +20,12 @@ export default function DashboardPage() {
   return (
     <DashboardShell>
       <DashboardNav />
-      <main className="mx-auto max-w-6xl px-4 py-8 pb-20 sm:px-6 sm:py-10">
+      <main className="sara-dashboard-main">
         {error ? (
-          <div
-            className={cn(
-              'mb-8 flex flex-wrap items-center justify-between gap-3 border border-amber-200/95 px-4 py-3.5 text-sm font-semibold text-amber-950 shadow-md',
-              glassCardInner,
-              'bg-amber-50/90'
-            )}
-          >
+          <div className="sara-dash-error" role="alert">
             <span>{error}</span>
-            <button
-              type="button"
-              onClick={() => reload()}
-              className="inline-flex items-center gap-2 rounded-xl border border-white/70 bg-white/90 px-3 py-2 text-xs font-bold text-slate-800 shadow-sm transition-colors hover:bg-white"
-            >
-              <RefreshCw className="h-4 w-4 text-[#3B82F6]" />
+            <button type="button" className="sara-dash-retry-btn" onClick={() => reload()}>
+              <RefreshCw className="h-4 w-4" style={{ color: '#3b82f6' }} strokeWidth={2} />
               Retry
             </button>
           </div>
@@ -44,39 +33,43 @@ export default function DashboardPage() {
 
         <DashboardHero profile={data.sara} weekStudyMinutes={data.planner.week_total_minutes} loading={loading} />
 
-        <div className="mt-12">
-          <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+        <section className="sara-dash-section" aria-labelledby="dash-perf-heading">
+          <div className="sara-dash-section-head">
             <div>
-              <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-[#3B82F6]">Performance</h2>
-              <p className="mt-1 text-lg font-extrabold text-slate-900">Trends &amp; study mix</p>
+              <h2 id="dash-perf-heading" className="sara-dash-kicker sara-dash-kicker--blue">
+                Performance
+              </h2>
+              <p className="sara-dash-section-title">Trends &amp; study mix</p>
             </div>
-            <p className="max-w-sm text-xs font-medium text-slate-500">
+            <p className="sara-dash-section-desc">
               Mock trajectory and how your week broke down by subject.
             </p>
           </div>
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="sara-dash-grid-2">
             <ScoreTrendChart data={data.trend} />
             <StudyHoursChart planner={data.planner} />
           </div>
-        </div>
+        </section>
 
-        <div className="mt-12">
-          <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+        <section className="sara-dash-section" aria-labelledby="dash-focus-heading">
+          <div className="sara-dash-section-head">
             <div>
-              <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-[#6366F1]">Focus areas</h2>
-              <p className="mt-1 text-lg font-extrabold text-slate-900">Fix recurring slips · track accuracy</p>
+              <h2 id="dash-focus-heading" className="sara-dash-kicker sara-dash-kicker--indigo">
+                Focus areas
+              </h2>
+              <p className="sara-dash-section-title">Fix recurring slips · track accuracy</p>
             </div>
-            <p className="max-w-sm text-xs font-medium text-slate-500">
+            <p className="sara-dash-section-desc">
               Turn mistake frequency and concept accuracy into your next study block.
             </p>
           </div>
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="sara-dash-grid-2">
             <WeakConceptsCard rows={data.mistakes} />
             <ConceptAccuracyPanel rows={data.accuracy} />
           </div>
-        </div>
+        </section>
 
-        <footer className="mt-16 border-t border-white/40 pt-8 text-center text-xs font-semibold text-slate-400">
+        <footer className="sara-dash-footer">
           Sara study hub · Data syncs as you log mocks, sessions, and practice
         </footer>
       </main>

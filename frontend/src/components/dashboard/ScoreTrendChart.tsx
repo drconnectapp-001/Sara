@@ -40,24 +40,14 @@ export function ScoreTrendChart({ data, className }: ScoreTrendChartProps) {
   const hasData = chartData.length > 0
 
   return (
-    <div className={cn('flex h-[320px] flex-col p-5', glassCard, className)}>
-      <div className="mb-4 flex items-start justify-between gap-4">
-        <div>
-          <h2 className="text-base font-bold text-slate-900">Mock score trend</h2>
-          <p className="mt-0.5 text-xs font-medium text-slate-500">Total score over recent mocks</p>
-        </div>
+    <div className={cn('sara-dashboard-chart-shell', glassCard, className)}>
+      <div>
+        <h2 className="sara-chart-card-title">Mock score trend</h2>
+        <p className="sara-chart-card-sub">Total score over recent mocks</p>
       </div>
-      <div className="min-h-0 flex-1 w-full">
+      <div style={{ flex: 1, minHeight: 0, width: '100%' }}>
         {!hasData ? (
-          <div
-            className="flex h-full items-center justify-center rounded-xl border border-dashed px-6 text-center text-sm font-semibold text-slate-600"
-            style={{
-              borderColor: 'rgba(125, 211, 252, 0.65)',
-              background: 'rgba(240, 249, 255, 0.65)',
-            }}
-          >
-            No mock scores yet. Log a mock to see your curve here.
-          </div>
+          <div className="sara-chart-empty">No mock scores yet. Log a mock to see your curve here.</div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 8, right: 8, left: -8, bottom: 4 }}>

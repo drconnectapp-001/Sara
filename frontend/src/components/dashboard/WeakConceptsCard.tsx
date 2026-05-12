@@ -14,43 +14,30 @@ export function WeakConceptsCard({ rows, className }: WeakConceptsCardProps) {
   const maxErrors = rows.reduce((m, r) => Math.max(m, r.errors), 0) || 1
 
   return (
-    <div className={cn('flex flex-col p-5', glassCard, className)}>
-      <div className="mb-4 flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100/90 text-amber-700 shadow-sm ring-1 ring-amber-200/80">
+    <div className={cn('sara-dashboard-section-card', glassCard, className)}>
+      <div className="sara-dashboard-card-head">
+        <div className="sara-dashboard-icon-badge sara-dashboard-icon-badge--amber" aria-hidden>
           <AlertTriangle className="h-4 w-4" strokeWidth={2} />
         </div>
         <div>
-          <h2 className="text-base font-bold text-slate-900">Top weak concepts</h2>
-          <p className="text-xs font-medium text-slate-500">From mistake patterns (top 5)</p>
+          <h2 className="sara-chart-card-title">Top weak concepts</h2>
+          <p className="sara-chart-card-sub">From mistake patterns (top 5)</p>
         </div>
       </div>
-      <ul className="space-y-3">
+      <ul className="sara-weak-list">
         {rows.length === 0 ? (
-          <li
-            className="rounded-xl border border-dashed py-10 text-center text-sm font-semibold text-slate-600"
-            style={{
-              borderColor: 'rgba(125, 211, 252, 0.65)',
-              background: 'rgba(240, 249, 255, 0.65)',
-            }}
-          >
-            No mistake data yet. Keep practicing — patterns will show up here.
-          </li>
+          <li className="sara-weak-empty">No mistake data yet. Keep practicing — patterns will show up here.</li>
         ) : (
           rows.map((r, i) => (
-            <li
-              key={r.concept}
-              className={cn('border border-white/50 p-3 shadow-sm', glassCardInner)}
-            >
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-bold text-[#6366F1]">#{i + 1}</span>
-                <span className="text-xs font-semibold tabular-nums text-amber-800/90">
-                  {r.errors} errors
-                </span>
+            <li key={r.concept} className={cn('sara-weak-item', glassCardInner)}>
+              <div className="sara-weak-item-top">
+                <span className="sara-weak-rank">#{i + 1}</span>
+                <span className="sara-weak-count">{r.errors} errors</span>
               </div>
-              <p className="mt-1 text-sm font-semibold text-slate-800">{r.concept}</p>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-sky-100/80">
+              <p className="sara-weak-concept-title">{r.concept}</p>
+              <div className="sara-weak-bar-track">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#3B82F6] to-amber-400"
+                  className="sara-weak-bar-fill"
                   style={{ width: `${Math.max(8, (r.errors / maxErrors) * 100)}%` }}
                 />
               </div>
