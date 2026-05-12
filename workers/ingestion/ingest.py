@@ -198,8 +198,10 @@ async def main():
     # Process each PDF sequentially (Neo4j + rate limits)
     success = 0
     failed = []
+    total = len(queue)
 
-    for pdf_path, meta in queue:
+    for idx, (pdf_path, meta) in enumerate(queue, 1):
+        print(f"\n[{idx}/{total}] Processing {pdf_path.name}...")
         try:
             ok = await process_pdf(pdf_path, meta, graph, embedder, args.dry_run)
             if ok:
