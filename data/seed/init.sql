@@ -216,6 +216,20 @@ INSERT INTO jee_chapters VALUES
   ('mat11-09', 'Limits & Derivatives', 'Mathematics', 11, 7, 9),
   ('mat11-10', 'Statistics & Probability', 'Mathematics', 11, 5, 10);
 
+-- ── Wiki Knowledge Chunks (Obsidian vault → RAG + practice + formulas) ───────
+
+CREATE TABLE IF NOT EXISTS wiki_chunks (
+    id               SERIAL PRIMARY KEY,
+    concept_id       TEXT NOT NULL,
+    concept_name     TEXT NOT NULL,
+    subject          TEXT NOT NULL,
+    section_heading  TEXT NOT NULL,
+    content          TEXT,
+    embedding        vector(1536),
+    created_at       TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (concept_id, section_heading)
+);
+
 -- ── NCERT Section Chunks (full text for RAG retrieval) ──────────────────────
 
 CREATE TABLE IF NOT EXISTS ncert_chunks (
@@ -238,3 +252,4 @@ CREATE INDEX ON sara_concept_accuracy (subject);
 CREATE INDEX ON sara_practice_attempts (attempted_at);
 CREATE INDEX ON sara_study_sessions (started_at);
 CREATE INDEX ON ncert_chunks USING ivfflat (embedding vector_cosine_ops) WITH (lists = 50);
+CREATE INDEX IF NOT EXISTS wiki_chunks_embedding_idx ON wiki_chunks USING ivfflat (embedding vector_cosine_ops);
