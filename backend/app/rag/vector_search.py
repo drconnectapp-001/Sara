@@ -97,6 +97,42 @@ async def find_ncert_sections(query: str, subject: str = None, top_k: int = 2) -
     ]
 
 
+async def find_similar_chunks(query: str, top_k: int = 5) -> list[dict]:
+    """
+    Find the most relevant wiki chunks for a query.
+    Searches the Obsidian wiki content embedded in wiki_chunks table.
+    """
+    query_embedding = await embed_text(query)
+    embedding_str = "[" + ",".join(str(x) for x in query_embedding) + "]"
+
+    sql = text("""
+        SELECT concept_name, section_heading, content, subject,
+               1 - (embedding <=> :embedding::vector) AS similarity
+        FROM wiki_chunks
+        ORDER BY embedding <=> :embedding::vector
+        LIMIT :top_k
+    """)
+
+    async with SessionLocal() as session:
+        result = await session.execute(sql, {
+            "embedding": embedding_str,
+            "top_k": top_k
+        })
+        rows = result.fetchall()
+
+    return [
+        {
+            "concept": row.concept_name,
+            "heading": row.section_heading,
+            "content": row.content[:800],
+            "subject": row.subject,
+            "similarity": float(row.similarity)
+        }
+        for row in rows
+        if float(row.similarity) > 0.65
+    ]
+
+
 async def find_similar_doubts(query: str, top_k: int = 2) -> list[dict]:
     """Find past doubts Sara asked that are similar to this one."""
     query_embedding = await embed_text(query)
