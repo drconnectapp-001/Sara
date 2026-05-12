@@ -25,3 +25,14 @@
     border-radius: 3px;
   }
 }
+
+/* Markdown + KaTeX inside chat bubbles */
+.chat-md .katex {
+  font-size: 1.05em;
+  color: rgb(226 232 240);
+}
+.chat-md .katex-display {
+  margin: 0.75rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}

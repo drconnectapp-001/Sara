@@ -1,138 +1,94 @@
 'use client'
-/**
- * Companion Chat — Sara's main AI interface
- * Streams responses from /api/chat via Server-Sent Events
- */
-import { useState, useRef, useEffect } from 'react'
-import ReactMarkdown from 'react-markdown'
-import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
 
-interface Message {
-  role: 'user' | 'assistant'
-  content: string
-}
+/**
+ * Sara — main companion chat. Streams SSE tokens from POST /api/chat/.
+ */
+import { useCallback, useState } from 'react'
+import { ChatHeader } from '@/components/chat/ChatHeader'
+import { ChatComposer } from '@/components/chat/ChatComposer'
+import { ChatMessageList } from '@/components/chat/ChatMessageList'
+import { parseSseTokens } from '@/components/chat/parseSseStream'
+import { usePersistedSessionId } from '@/components/chat/usePersistedSessionId'
+import type { ChatMessage } from '@/components/chat/types'
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>([])
+  const sessionId = usePersistedSessionId()
+  const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
-  const [loading, setLoading] = useState(false)
-  const bottomRef = useRef<HTMLDivElement>(null)
+  const [streaming, setStreaming] = useState(false)
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+  const sendMessage = useCallback(async () => {
+    const text = input.trim()
+    if (!text || streaming || !sessionId) return
 
-  async function sendMessage() {
-    if (!input.trim() || loading) return
-    const userMessage = input.trim()
     setInput('')
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }])
-    setLoading(true)
-
-    setMessages(prev => [...prev, { role: 'assistant', content: '' }])
+    setMessages((prev) => [...prev, { role: 'user', content: text }, { role: 'assistant', content: '' }])
+    setStreaming(true)
 
     try {
       const response = await fetch('/api/chat/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage, session_id: 'main' }),
+        body: JSON.stringify({ message: text, session_id: sessionId }),
       })
 
-      const reader = response.body!.getReader()
-      const decoder = new TextDecoder()
-
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-
-        const text = decoder.decode(value)
-        const lines = text.split('\n')
-
-        for (const line of lines) {
-          if (line.startsWith('data: ') && !line.includes('[DONE]')) {
-            const chunk = line.replace('data: ', '')
-            setMessages(prev => {
-              const updated = [...prev]
-              updated[updated.length - 1].content += chunk
-              return updated
-            })
-          }
-        }
+      if (!response.ok || !response.body) {
+        throw new Error(`Chat request failed: ${response.status}`)
       }
-    } catch (err) {
-      setMessages(prev => {
-        const updated = [...prev]
-        updated[updated.length - 1].content = 'Something went wrong. Please try again.'
-        return updated
+
+      for await (const token of parseSseTokens(response.body)) {
+        setMessages((prev) => {
+          if (prev.length === 0) return prev
+          const next = [...prev]
+          const last = next[next.length - 1]
+          if (last.role !== 'assistant') return prev
+          next[next.length - 1] = { ...last, content: last.content + token }
+          return next
+        })
+      }
+    } catch {
+      setMessages((prev) => {
+        if (prev.length === 0) return prev
+        const next = [...prev]
+        const last = next[next.length - 1]
+        if (last.role === 'assistant' && last.content === '')
+          next[next.length - 1] = {
+            ...last,
+            content: 'Could not reach Sara. Check that the API is running and try again.',
+          }
+        return next
       })
     } finally {
-      setLoading(false)
+      setStreaming(false)
     }
-  }
+  }, [input, sessionId, streaming])
 
   return (
-    <div className="flex flex-col h-screen max-w-3xl mx-auto">
-      {/* Header */}
-      <div className="border-b border-sara-border p-4">
-        <h1 className="font-semibold">Your JEE Companion</h1>
-        <p className="text-sara-muted text-xs">Ask anything — doubts, concepts, or just talk</p>
-      </div>
+    <div className="relative flex min-h-screen flex-col bg-[#0a0a12] text-sara-text">
+      {/* ambient background */}
+      <div
+        className="pointer-events-none fixed inset-0 opacity-40"
+        aria-hidden
+        style={{
+          backgroundImage: `
+            radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.22), transparent),
+            radial-gradient(ellipse 60% 40% at 100% 50%, rgba(139, 92, 246, 0.08), transparent),
+            radial-gradient(ellipse 50% 30% at 0% 80%, rgba(99, 102, 241, 0.06), transparent)
+          `,
+        }}
+      />
+      <div
+        className="pointer-events-none fixed inset-0 opacity-[0.35]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }}
+        aria-hidden
+      />
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.length === 0 && (
-          <div className="text-center text-sara-muted text-sm mt-20">
-            <p className="text-lg mb-2">Hey Sara</p>
-            <p>What are we working on today?</p>
-          </div>
-        )}
-
-        {messages.map((msg, i) => (
-          <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed
-              ${msg.role === 'user'
-                ? 'bg-sara-primary text-white rounded-br-sm'
-                : 'bg-sara-surface border border-sara-border rounded-bl-sm'
-              }`}>
-              {msg.role === 'assistant' ? (
-                <ReactMarkdown
-                  remarkPlugins={[remarkMath]}
-                  rehypePlugins={[rehypeKatex]}
-                  className="prose prose-invert prose-sm max-w-none"
-                >
-                  {msg.content || '...'}
-                </ReactMarkdown>
-              ) : (
-                <p>{msg.content}</p>
-              )}
-            </div>
-          </div>
-        ))}
-        <div ref={bottomRef} />
-      </div>
-
-      {/* Input */}
-      <div className="border-t border-sara-border p-4">
-        <div className="flex gap-2">
-          <input
-            className="flex-1 bg-sara-surface border border-sara-border rounded-xl px-4 py-3
-                       text-sm placeholder-sara-muted focus:outline-none focus:border-sara-primary"
-            placeholder="Ask a doubt, or just talk..."
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage()}
-            disabled={loading}
-          />
-          <button
-            onClick={sendMessage}
-            disabled={loading || !input.trim()}
-            className="bg-sara-primary hover:bg-indigo-500 disabled:opacity-40
-                       text-white px-5 py-3 rounded-xl text-sm font-medium transition-colors"
-          >
-            Send
-          </button>
-        </div>
+      <div className="relative z-10 flex min-h-screen flex-col">
+        <ChatHeader />
+        <ChatMessageList messages={messages} streaming={streaming} />
+        <ChatComposer value={input} onChange={setInput} onSend={sendMessage} disabled={streaming || !sessionId} />
       </div>
     </div>
   )
