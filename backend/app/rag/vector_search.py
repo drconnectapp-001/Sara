@@ -105,19 +105,17 @@ async def find_similar_chunks(query: str, top_k: int = 5) -> list[dict]:
     query_embedding = await embed_text(query)
     embedding_str = "[" + ",".join(str(x) for x in query_embedding) + "]"
 
-    sql = text("""
+    # Use f-string for embedding to avoid asyncpg named param issues with ::vector cast
+    sql = text(f"""
         SELECT concept_name, section_heading, content, subject,
-               1 - (embedding <=> :embedding::vector) AS similarity
+               1 - (embedding <=> '{embedding_str}'::vector) AS similarity
         FROM wiki_chunks
-        ORDER BY embedding <=> :embedding::vector
+        ORDER BY embedding <=> '{embedding_str}'::vector
         LIMIT :top_k
     """)
 
     async with SessionLocal() as session:
-        result = await session.execute(sql, {
-            "embedding": embedding_str,
-            "top_k": top_k
-        })
+        result = await session.execute(sql, {"top_k": top_k})
         rows = result.fetchall()
 
     return [
