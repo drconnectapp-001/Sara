@@ -78,7 +78,13 @@ export function StudyHoursChart({ planner, className }: StudyHoursChartProps) {
       </div>
       <div className="min-h-0 flex-1 w-full pt-2">
         {chartData.length === 0 ? (
-          <div className="flex h-full items-center justify-center rounded-xl border border-dashed border-sky-200/80 bg-sky-50/40 px-6 text-center text-sm font-medium text-slate-500 backdrop-blur-sm">
+          <div
+            className="flex h-full items-center justify-center rounded-xl border border-dashed px-6 text-center text-sm font-semibold text-slate-600"
+            style={{
+              borderColor: 'rgba(125, 211, 252, 0.65)',
+              background: 'rgba(240, 249, 255, 0.65)',
+            }}
+          >
             No sessions this week. Log study time in the planner to fill this chart.
           </div>
         ) : (

@@ -27,10 +27,11 @@ export function WeakConceptsCard({ rows, className }: WeakConceptsCardProps) {
       <ul className="space-y-3">
         {rows.length === 0 ? (
           <li
-            className={cn(
-              'border border-dashed border-sky-200/90 bg-sky-50/50 py-8 text-center text-sm font-medium text-slate-500 backdrop-blur-sm',
-              'rounded-xl'
-            )}
+            className="rounded-xl border border-dashed py-10 text-center text-sm font-semibold text-slate-600"
+            style={{
+              borderColor: 'rgba(125, 211, 252, 0.65)',
+              background: 'rgba(240, 249, 255, 0.65)',
+            }}
           >
             No mistake data yet. Keep practicing — patterns will show up here.
           </li>

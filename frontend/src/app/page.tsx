@@ -1,9 +1,9 @@
 /**
- * Dashboard — Sara's home screen
- * TODO: Wire up real data from /api/analytics
+ * Landing — dark shell matches chat / companion aesthetic
  */
-export default function Dashboard() {
+export default function HomePage() {
   return (
+    <div className="sara-dark-app">
     <main className="min-h-screen p-6 max-w-6xl mx-auto">
       <header className="mb-8">
         <h1 className="text-2xl font-semibold text-sara-text">
@@ -14,7 +14,6 @@ export default function Dashboard() {
         </p>
       </header>
 
-      {/* TODO: Replace with real components */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <StatCard label="Study Streak" value="—" unit="days" />
         <StatCard label="Questions Today" value="—" unit="solved" />
@@ -32,6 +31,7 @@ export default function Dashboard() {
         </div>
       </div>
     </main>
+    </div>
   )
 }
 

@@ -49,7 +49,13 @@ export function ScoreTrendChart({ data, className }: ScoreTrendChartProps) {
       </div>
       <div className="min-h-0 flex-1 w-full">
         {!hasData ? (
-          <div className="flex h-full items-center justify-center rounded-xl border border-dashed border-sky-200/80 bg-sky-50/40 px-6 text-center text-sm font-medium text-slate-500 backdrop-blur-sm">
+          <div
+            className="flex h-full items-center justify-center rounded-xl border border-dashed px-6 text-center text-sm font-semibold text-slate-600"
+            style={{
+              borderColor: 'rgba(125, 211, 252, 0.65)',
+              background: 'rgba(240, 249, 255, 0.65)',
+            }}
+          >
             No mock scores yet. Log a mock to see your curve here.
           </div>
         ) : (

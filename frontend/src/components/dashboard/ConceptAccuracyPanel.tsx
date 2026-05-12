@@ -3,7 +3,7 @@
 import { Crosshair } from 'lucide-react'
 import type { ConceptAccuracyRow } from './types'
 import { cn } from './cn'
-import { glassCard } from './dashboardTheme'
+import { glassCard, glassCardInner } from './dashboardTheme'
 
 interface ConceptAccuracyPanelProps {
   rows: ConceptAccuracyRow[]
@@ -25,12 +25,7 @@ export function ConceptAccuracyPanel({ rows, className, maxRows = 12 }: ConceptA
           <p className="text-xs font-medium text-slate-500">Practice performance · lowest first</p>
         </div>
       </div>
-      <div
-        className={cn(
-          'max-h-[340px] overflow-auto border border-white/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.85)]',
-          'rounded-xl bg-white/35 backdrop-blur-md'
-        )}
-      >
+      <div className={cn('max-h-[340px] overflow-auto', glassCardInner)}>
         <table className="w-full text-left text-sm">
           <thead className="sticky top-0 z-[1] border-b border-white/40 bg-white/65 backdrop-blur-md">
             <tr className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
